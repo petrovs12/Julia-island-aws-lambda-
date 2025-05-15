@@ -11,6 +11,9 @@ RUN yum -y install curl tar gzip xz && \
     ln -s /opt/julia/bin/julia /usr/local/bin/julia
 
 # Add Julia library path so libjulia can find correct libstdc++ during Lambda init
+# there was a weird bug where the libstdc++ was not found, so we ensure it is linked
+# it happened only when invoking the lambda function from the CLI,
+# not when invoking the app.py entrypoint from the docker manually.
 ENV LD_LIBRARY_PATH="/opt/julia-${JULIA_VERSION}/lib/julia:${LD_LIBRARY_PATH}"
 # Ensure newer libstdc++ is discoverable by default loader
 RUN ln -sf /opt/julia-${JULIA_VERSION}/lib/julia/libstdc++.so.6 /usr/lib64/libstdc++.so.6
